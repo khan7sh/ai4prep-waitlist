@@ -12,24 +12,35 @@ function App() {
     setSubmitted(false);
 
     try {
+      console.log('Submitting email:', email);
       const response = await fetch('/.netlify/functions/submit-email', {
         method: 'POST',
         body: JSON.stringify({ email }),
         headers: {
           'Content-Type': 'application/json',
         },
-        credentials: 'same-origin'
       });
 
+      console.log('Response status:', response.status);
+      const responseText = await response.text();
+      console.log('Response text:', responseText);
+
       if (response.ok) {
-        await response.json();
+        let responseData;
+        try {
+          responseData = JSON.parse(responseText);
+        } catch (err) {
+          console.error('Error parsing JSON:', err);
+          throw new Error('Invalid response from server');
+        }
+        console.log('Response data:', responseData);
         setSubmitted(true);
         setEmail('');
       } else {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to submit email');
+        throw new Error(`Failed to submit email: ${responseText}`);
       }
     } catch (err) {
+      console.error('Error:', err);
       setError(err.message || 'An error occurred. Please try again.');
     }
   };

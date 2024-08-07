@@ -1,24 +1,20 @@
 const admin = require('firebase-admin');
 
-// Initialize Firebase Admin SDK
-if (!admin.apps.length) {
-  admin.initializeApp({
-    credential: admin.credential.cert(JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT))
-  });
-}
-
-const db = admin.firestore();
+let db;
 
 exports.handler = async (event, context) => {
-  // Add CORS headers
+  console.log('Function invoked');
+  console.log('Event:', JSON.stringify(event));
+  console.log('Context:', JSON.stringify(context));
+
   const headers = {
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Headers': 'Content-Type',
     'Access-Control-Allow-Methods': 'POST, OPTIONS',
   };
 
-  // Handle preflight request
   if (event.httpMethod === 'OPTIONS') {
+    console.log('Handling OPTIONS request');
     return {
       statusCode: 200,
       headers,
@@ -27,6 +23,7 @@ exports.handler = async (event, context) => {
   }
 
   if (event.httpMethod !== 'POST') {
+    console.log('Method not allowed:', event.httpMethod);
     return { 
       statusCode: 405, 
       headers,
@@ -35,24 +32,36 @@ exports.handler = async (event, context) => {
   }
 
   try {
+    console.log('Initializing Firebase');
+    if (!admin.apps.length) {
+      admin.initializeApp({
+        credential: admin.credential.cert(JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT))
+      });
+    }
+    db = admin.firestore();
+
+    console.log('Parsing request body');
     const { email } = JSON.parse(event.body);
-    
+    console.log('Received email:', email);
+
+    console.log('Adding email to Firestore');
     await db.collection('waitlist').add({
       email,
       timestamp: admin.firestore.FieldValue.serverTimestamp()
     });
     
+    console.log('Successfully processed email');
     return {
       statusCode: 200,
       headers,
       body: JSON.stringify({ message: 'Email saved successfully' }),
     };
   } catch (error) {
-    console.error('Error saving email:', error);
+    console.error('Error:', error);
     return {
       statusCode: 500,
       headers,
-      body: JSON.stringify({ error: 'Failed to save email' }),
+      body: JSON.stringify({ error: 'Internal server error: ' + error.message }),
     };
   }
 };
