@@ -13,6 +13,7 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
+const db = getFirestore();
 
 function Home() {
   const [email, setEmail] = useState('');
@@ -174,5 +175,35 @@ function App() {
     </Router>
   );
 }
+
+function Admin() {
+  const [users, setUsers] = useState([]);
+
+  useEffect(() => {
+    async function fetchUsers() {
+      const querySnapshot = await getDocs(collection(db, "waitlist"));
+      const userList = querySnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+      setUsers(userList);
+    }
+    fetchUsers();
+  }, []);
+
+  return (
+    <div className="admin-container">
+      <h1>Admin Dashboard</h1>
+      <h2>Signed Up Users:</h2>
+      <ul>
+        {users.map(user => (
+          <li key={user.id}>{user.email}</li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+
 
 export default App;
