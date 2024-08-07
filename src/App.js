@@ -10,7 +10,7 @@ function App() {
     e.preventDefault();
     setError('');
     setSubmitted(false);
-  
+
     try {
       const response = await fetch('/.netlify/functions/submit-email', {
         method: 'POST',
@@ -18,8 +18,9 @@ function App() {
         headers: {
           'Content-Type': 'application/json',
         },
+        credentials: 'same-origin'
       });
-  
+
       if (response.ok) {
         await response.json();
         setSubmitted(true);
