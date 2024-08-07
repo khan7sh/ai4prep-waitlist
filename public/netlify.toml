@@ -4,7 +4,7 @@
   functions = "netlify/functions"
 
 [build.environment]
-  NODE_VERSION = "16.14.0"
+  NODE_VERSION = "18.17.0"
 
 [[redirects]]
   from = "/*"
