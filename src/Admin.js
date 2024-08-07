@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { getFirestore, collection, getDocs } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
+import './Admin.css';
 
 const db = getFirestore();
 const auth = getAuth();
@@ -21,7 +22,7 @@ function Admin() {
   }, []);
 
   return (
-    <div>
+    <div className="admin-container">
       <h1>Admin Dashboard</h1>
       <h2>Signed Up Users:</h2>
       <ul>
