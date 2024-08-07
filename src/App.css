@@ -3,32 +3,28 @@
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background-color: #000000;
+  background-color: #15202b;
   color: #ffffff;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  font-family: Arial, sans-serif;
 }
 
 .form-container {
-  background: #15202b;
+  background-color: #192734;
   padding: 2rem;
-  border-radius: 16px;
+  border-radius: 10px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   text-align: center;
-  width: 100%;
   max-width: 400px;
+  width: 100%;
 }
 
 .logo {
-  width: 80px;
+  width: 100px;
   margin-bottom: 1rem;
 }
 
 h1 {
-  color: #ffffff;
   margin-bottom: 1.5rem;
-  font-size: 1.5rem;
 }
 
 form {
@@ -37,23 +33,22 @@ form {
 }
 
 input {
-  padding: 0.75rem;
+  padding: 0.5rem;
   margin-bottom: 1rem;
   border: 1px solid #38444d;
-  border-radius: 9999px;
-  background-color: #192734;
+  border-radius: 4px;
+  background-color: #253341;
   color: #ffffff;
 }
 
 button {
-  padding: 0.75rem;
+  padding: 0.5rem;
   background-color: #764ba2;
   color: white;
   border: none;
-  border-radius: 9999px;
+  border-radius: 4px;
   cursor: pointer;
   transition: background-color 0.3s ease;
-  font-weight: bold;
 }
 
 button:hover {
@@ -75,28 +70,8 @@ button:hover {
 .social-media a {
   color: #764ba2;
   text-decoration: none;
-  margin: 0 0.5rem;
 }
 
 .social-media a:hover {
   color: #667eea;
-}
-
-.submitted-emails {
-  margin-top: 2rem;
-  text-align: left;
-}
-
-.submitted-emails h2 {
-  font-size: 1.2rem;
-  margin-bottom: 0.5rem;
-}
-
-.submitted-emails ul {
-  list-style-type: none;
-  padding: 0;
-}
-
-.submitted-emails li {
-  margin-bottom: 0.25rem;
 }
