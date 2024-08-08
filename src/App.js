@@ -89,18 +89,21 @@ function Home() {
   );
 }
 
-function Login({ setIsAuthenticated }) {
+function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    setError('');
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      setIsAuthenticated(true);
+      navigate('/admin');
     } catch (error) {
-      setError('Failed to log in');
+      console.error("Login error:", error);
+      setError('Failed to log in. Please check your credentials.');
     }
   };
 
@@ -134,25 +137,30 @@ function Login({ setIsAuthenticated }) {
 function ProtectedRoute({ children }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setIsAuthenticated(!!user);
       setLoading(false);
+      if (!user) {
+        navigate('/login');
+      }
     });
 
     return () => unsubscribe();
-  }, []);
+  }, [navigate]);
 
   if (loading) {
     return <div className="loading">Loading...</div>;
   }
 
-  return isAuthenticated ? children : <Navigate to="/login" />;
+  return isAuthenticated ? children : null;
 }
 
 function Admin() {
   const [users, setUsers] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     async function fetchUsers() {
@@ -166,6 +174,14 @@ function Admin() {
     fetchUsers();
   }, []);
 
+  const handleLogout = () => {
+    signOut(auth).then(() => {
+      navigate('/login');
+    }).catch((error) => {
+      console.error("Logout error:", error);
+    });
+  };
+
   return (
     <div className="admin-container animate-fade-in">
       <h1>Admin Dashboard</h1>
@@ -175,6 +191,7 @@ function Admin() {
           <li key={user.id}>{user.email}</li>
         ))}
       </ul>
+      <button onClick={handleLogout} className="submit-button">Logout</button>
     </div>
   );
 }
@@ -203,7 +220,7 @@ function App() {
       <div className="App">
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/login" element={<Login setIsAuthenticated={setIsAuthenticated} />} />
+          <Route path="/login" element={<Login />} />
           <Route 
             path="/admin" 
             element={
