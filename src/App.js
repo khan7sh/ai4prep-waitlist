@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Route, Routes, Link, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import { initializeApp } from 'firebase/app';
 import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'firebase/auth';
 import { getFirestore, collection, getDocs } from 'firebase/firestore';
@@ -7,7 +7,6 @@ import './App.css';
 
 console.log('App.js is running');
 
-// Your web app's Firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyBzq0AsPw4NiyfsLcd8Hx5azzJspMCZccw",
   authDomain: "ai4prep.firebaseapp.com",
@@ -18,8 +17,6 @@ const firebaseConfig = {
   measurementId: "G-D6HYE298T8"
 };
 
-
-// Initialize Firebase
 let app, auth, db;
 try {
   console.log('Initializing Firebase');
@@ -64,21 +61,22 @@ function Home() {
 
   return (
     <div className="form-container">
-      <img src="/logo.png" alt="AI4PREP Logo" className="logo" />
-      <h1>Join the AI4PREP Waitlist</h1>
-      <form onSubmit={handleSubmit}>
+      <img src="/logo.png" alt="AI4PREP Logo" className="logo animate-pulse" />
+      <h1 className="animate-fade-in">Join the AI4PREP Waitlist</h1>
+      <form onSubmit={handleSubmit} className="animate-slide-up">
         <input
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="Enter your email"
           required
+          className="animate-input"
         />
-        <button type="submit">Join Waitlist</button>
+        <button type="submit" className="submit-button">Join Waitlist</button>
       </form>
-      {submitted && <p className="success-message">Thank you for joining our waitlist!</p>}
-      {error && <p className="error-message">{error}</p>}
-      <div className="social-media">
+      {submitted && <p className="success-message animate-fade-in">Thank you for joining our waitlist!</p>}
+      {error && <p className="error-message animate-fade-in">{error}</p>}
+      <div className="social-media animate-fade-in">
         <a 
           href="https://www.instagram.com/ai4prep?igsh=eDkycDUzYWR6ZHJq" 
           target="_blank" 
@@ -107,15 +105,16 @@ function Login({ setIsAuthenticated }) {
   };
 
   return (
-    <div>
-      <h2>Admin Login</h2>
-      <form onSubmit={handleLogin}>
+    <div className="form-container">
+      <h2 className="animate-fade-in">Admin Login</h2>
+      <form onSubmit={handleLogin} className="animate-slide-up">
         <input
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="Email"
           required
+          className="animate-input"
         />
         <input
           type="password"
@@ -123,10 +122,11 @@ function Login({ setIsAuthenticated }) {
           onChange={(e) => setPassword(e.target.value)}
           placeholder="Password"
           required
+          className="animate-input"
         />
-        <button type="submit">Login</button>
+        <button type="submit" className="submit-button">Login</button>
       </form>
-      {error && <p>{error}</p>}
+      {error && <p className="error-message animate-fade-in">{error}</p>}
     </div>
   );
 }
@@ -145,7 +145,7 @@ function ProtectedRoute({ children }) {
   }, []);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <div className="loading">Loading...</div>;
   }
 
   return isAuthenticated ? children : <Navigate to="/login" />;
@@ -167,10 +167,10 @@ function Admin() {
   }, []);
 
   return (
-    <div className="admin-container">
+    <div className="admin-container animate-fade-in">
       <h1>Admin Dashboard</h1>
       <h2>Signed Up Users:</h2>
-      <ul>
+      <ul className="user-list animate-slide-up">
         {users.map(user => (
           <li key={user.id}>{user.email}</li>
         ))}
@@ -195,24 +195,12 @@ function App() {
   }, []);
 
   if (error) {
-    return <div>An error occurred: {error.message}</div>;
+    return <div className="error-container animate-fade-in">An error occurred: {error.message}</div>;
   }
 
   return (
     <Router>
       <div className="App">
-        <nav>
-          <ul>
-            <li><Link to="/">Home</Link></li>
-            {isAuthenticated && (
-              <>
-                <li><Link to="/admin">Admin</Link></li>
-                <li><button onClick={() => signOut(auth)}>Logout</button></li>
-              </>
-            )}
-          </ul>
-        </nav>
-
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login setIsAuthenticated={setIsAuthenticated} />} />
