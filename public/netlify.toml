@@ -1,16 +1,15 @@
 [build]
-  command = "CI=false npm run build"
+  command = "CI= npm run build"
   publish = "build"
-  functions = "netlify/functions"
-
-[build.environment]
-  NODE_VERSION = "18.17.0"
+  functions = "functions"
 
 [[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
-  force = false
+
+[build.environment]
+  NODE_VERSION = "16.14.0"
 
 [[headers]]
   for = "/*"
@@ -19,4 +18,3 @@
     X-XSS-Protection = "1; mode=block"
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
-    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://apis.google.com; connect-src 'self' https://*.firebase.com https://*.firebaseio.com; img-src 'self' data: https:; style-src 'self' 'unsafe-inline';"

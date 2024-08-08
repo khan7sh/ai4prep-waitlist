@@ -16,10 +16,13 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 
 
+let auth, db;
 try {
+  console.log('Initializing Firebase');
   const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-  const db = getFirestore(app);
+  auth = getAuth(app);
+  db = getFirestore(app);
+  console.log('Firebase initialized successfully');
 } catch (error) {
   console.error("Error initializing Firebase:", error);
 }
@@ -173,11 +176,14 @@ function Admin() {
 }
 
 function App() {
+  console.log('App component is rendering');
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    console.log('App useEffect is running');
     const unsubscribe = onAuthStateChanged(auth, (user) => {
+      console.log('Auth state changed:', user ? 'User is logged in' : 'User is logged out');
       setIsAuthenticated(!!user);
     });
 
