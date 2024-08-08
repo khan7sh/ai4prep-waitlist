@@ -170,14 +170,11 @@ function Admin() {
   useEffect(() => {
     async function fetchUsers() {
       try {
-        console.log("Fetching users...");
         const querySnapshot = await getDocs(collection(db, "waitlist"));
-        console.log("Query snapshot:", querySnapshot);
         const userList = querySnapshot.docs.map(doc => ({
           id: doc.id,
           ...doc.data()
         }));
-        console.log("User list:", userList);
         setUsers(userList);
       } catch (error) {
         console.error("Error fetching users:", error);
@@ -196,9 +193,13 @@ function Admin() {
   };
 
   const exportToCSV = () => {
+    if (users.length === 0) {
+      alert("No users to export.");
+      return;
+    }
     const csvContent = "data:text/csv;charset=utf-8," 
       + "Email,Timestamp\n"
-      + users.map(user => `${user.email},${user.timestamp?.toDate().toISOString() || ''}`).join("\n");
+      + users.map(user => `${user.email},${user.timestamp?.toDate?.().toISOString() || ''}`).join("\n");
     
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement("a");
@@ -215,11 +216,6 @@ function Admin() {
       <h2>Signed Up Users: {users.length}</h2>
       {error && <p className="error-message">Error: {error}</p>}
       <button onClick={exportToCSV} className="submit-button">Export to CSV</button>
-      <ul className="user-list animate-slide-up">
-        {users.map(user => (
-          <li key={user.id}>{user.email} - {user.timestamp?.toDate().toLocaleString() || 'No timestamp'}</li>
-        ))}
-      </ul>
       <button onClick={handleLogout} className="submit-button">Logout</button>
     </div>
   );
