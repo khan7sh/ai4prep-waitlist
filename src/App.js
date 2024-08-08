@@ -4,22 +4,28 @@ import { initializeApp } from 'firebase/app';
 import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'firebase/auth';
 import { getFirestore, collection, getDocs } from 'firebase/firestore';
 import './App.css';
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
+
+console.log('App.js is running');
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  // Add your Firebase config here
+  apiKey: "AIzaSyBzq0AsPw4NiyfsLcd8Hx5azzJspMCZccw",
+  authDomain: "ai4prep.firebaseapp.com",
+  projectId: "ai4prep",
+  storageBucket: "ai4prep.appspot.com",
+  messagingSenderId: "292263987065",
+  appId: "1:292263987065:web:20be9e93244e31855b91a8",
+  measurementId: "G-D6HYE298T8"
 };
 
+
 // Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
-
-
-let auth, db;
+let app, auth, db;
 try {
   console.log('Initializing Firebase');
-  const app = initializeApp(firebaseConfig);
+  app = initializeApp(firebaseConfig);
   auth = getAuth(app);
   db = getFirestore(app);
   console.log('Firebase initialized successfully');
