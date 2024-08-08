@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes, Link, Navigate } from 'react-router-dom';
 import { initializeApp } from 'firebase/app';
 import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'firebase/auth';
+import { getFirestore, collection, getDocs } from 'firebase/firestore';
 import './App.css';
-import Admin from './Admin';
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -13,7 +13,7 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
-const db = getFirestore();
+const db = getFirestore(app);
 
 function Home() {
   const [email, setEmail] = useState('');
@@ -135,6 +135,34 @@ function ProtectedRoute({ children }) {
   return isAuthenticated ? children : <Navigate to="/login" />;
 }
 
+function Admin() {
+  const [users, setUsers] = useState([]);
+
+  useEffect(() => {
+    async function fetchUsers() {
+      const querySnapshot = await getDocs(collection(db, "waitlist"));
+      const userList = querySnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+      setUsers(userList);
+    }
+    fetchUsers();
+  }, []);
+
+  return (
+    <div className="admin-container">
+      <h1>Admin Dashboard</h1>
+      <h2>Signed Up Users:</h2>
+      <ul>
+        {users.map(user => (
+          <li key={user.id}>{user.email}</li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
@@ -175,35 +203,5 @@ function App() {
     </Router>
   );
 }
-
-function Admin() {
-  const [users, setUsers] = useState([]);
-
-  useEffect(() => {
-    async function fetchUsers() {
-      const querySnapshot = await getDocs(collection(db, "waitlist"));
-      const userList = querySnapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      }));
-      setUsers(userList);
-    }
-    fetchUsers();
-  }, []);
-
-  return (
-    <div className="admin-container">
-      <h1>Admin Dashboard</h1>
-      <h2>Signed Up Users:</h2>
-      <ul>
-        {users.map(user => (
-          <li key={user.id}>{user.email}</li>
-        ))}
-      </ul>
-    </div>
-  );
-}
-
-
 
 export default App;

@@ -1,13 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { getFirestore, collection, getDocs } from 'firebase/firestore';
-import { getAuth } from 'firebase/auth';
 import './Admin.css';
-
-const db = getFirestore();
-const auth = getAuth();
 
 function Admin() {
   const [users, setUsers] = useState([]);
+  const db = getFirestore();
 
   useEffect(() => {
     async function fetchUsers() {
