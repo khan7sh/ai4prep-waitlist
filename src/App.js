@@ -15,6 +15,15 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
+
+try {
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+} catch (error) {
+  console.error("Error initializing Firebase:", error);
+}
+
 function Home() {
   const [email, setEmail] = useState('');
   const [submitted, setSubmitted] = useState(false);
@@ -165,12 +174,19 @@ function Admin() {
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [error, setError] = useState(null);
 
-  const handleLogout = () => {
-    signOut(auth).then(() => {
-      setIsAuthenticated(false);
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setIsAuthenticated(!!user);
     });
-  };
+
+    return () => unsubscribe();
+  }, []);
+
+  if (error) {
+    return <div>An error occurred: {error.message}</div>;
+  }
 
   return (
     <Router>
@@ -181,7 +197,7 @@ function App() {
             {isAuthenticated && (
               <>
                 <li><Link to="/admin">Admin</Link></li>
-                <li><button onClick={handleLogout}>Logout</button></li>
+                <li><button onClick={() => signOut(auth)}>Logout</button></li>
               </>
             )}
           </ul>
